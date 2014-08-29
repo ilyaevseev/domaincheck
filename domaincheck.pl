@@ -13,7 +13,7 @@
 
 test $# = 2 || { echo "Usage: $0 domain-list.txt /path/to/statedir/"; exit; }
 
- domlist="$1"
+ domlist="$1"   # ..textfile, one line = one domain
 statedir="$2"
 
 host -t any "ya.ru" || { echo "nslookup ya.ru failed" | mail -s "Domaincheck Error" admins; exit 1; }
