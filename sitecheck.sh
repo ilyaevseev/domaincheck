@@ -14,3 +14,5 @@ while read site; do
 	echo $state | grep -qi '200 OK' && continue
 	echo $state | mail -s "Sitecheck failed: $site" admins
 done < "$sitelist"
+
+exit 0

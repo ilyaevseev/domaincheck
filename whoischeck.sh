@@ -31,3 +31,5 @@ while read dom; do
                 break;
         done
 done < "$domlist"
+
+exit 0
