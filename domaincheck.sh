@@ -15,20 +15,22 @@ test $# = 2 || { echo "Usage: $0 domain-list.txt /path/to/statedir/"; exit; }
 
  domlist="$1"   # ..textfile, one line = one domain
 statedir="$2"
-nameservers="8.8.4.4  4.2.2.6  77.88.8.8"   #..google, level3, yandex
 
-# Is Internet connectivity alive? Fail if not..
-for ns in $nameservers; do
-        host -t any "ya.ru" "$ns" && continue
-        echo "nslookup ya.ru via $ns failed" | mail -s "Domaincheck Error" admins
-        exit 1
-done
+DNS_SERVERS="8.8.4.4  77.88.8.8  4.2.2.5"   # ..google, yandex, level3
+
+for ns in $DNS_SERVERS; do host -t any "ya.ru" && { ns_good="yes"; break; }; done
+test -n "$ns_good" || { echo "nslookup ya.ru failed" | mail -s "Domaincheck Error" admins; exit 1; }
 
 while read dom; do
         dom=${dom%%#*}   # ..strip comments
         test -z "$dom" && continue
-        for ns in $nameservers; do host -t any "$dom" "$ns"; sleep 1; done \
-            2>&1 | sort | uniq > "$statedir/$dom.state" || exit 1
+        for ns in $DNS_SERVERS; do
+                host        "$dom" "$ns"
+                host -t any "$dom" "$ns"
+                host -t ns  "$dom" "$ns"
+                host -t mx  "$dom" "$ns"
+                sleep 1
+        done 2>&1 | grep "^$dom " | sort | uniq > "$statedir/$dom.state" || exit 1
 done < "$domlist"
 
 cd "$statedir/" || exit 1
