@@ -22,7 +22,7 @@ for ns in $nameservers; do
         host -t any "ya.ru" "$ns" && continue
         echo "nslookup ya.ru via $ns failed" | mail -s "Domaincheck Error" admins
         exit 1
-fi
+done
 
 while read dom; do
         dom=${dom%%#*}   # ..strip comments
