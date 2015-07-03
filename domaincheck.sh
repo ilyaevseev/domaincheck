@@ -36,7 +36,7 @@ done < "$domlist"
 cd "$statedir/" || exit 1
 test -d ".hg" || hg init || exit 1   # ..Requires Mercirial!
 
-hg status | grep -q '' || exit   # ..nothing changed
+hg status | grep -q '' || exit 0   # ..nothing changed
 ( hg status ; hg diff ) | mail -s "Domaincheck report" admins
 hg addremove
 hg commit -m "Autocommit $(date '+%Y.%m.%d_%H:%M:%S')"
