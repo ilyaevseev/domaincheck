@@ -6,7 +6,10 @@ domlist="$1"   # ..textfile, one line = one domain
 
 while read dom; do
         dom=${dom%%#*}   # ..strip comments
-        test -z "$dom" && continue
+
+        # Skip empty lines, skip DENIC and com.au domains
+        # See also: https://www.whois.com.au/help/knowledgebase/expiries.html#2
+        case "$dom" in '' | *.de | *.com.au ) continue ;; esac
 
         d="$(whois $dom | awk '/[Ee]xpir.*[Dd]ate:/ || /[Tt]ill:/ {print $NF; exit;}')"
         if test -z "$d"; then
