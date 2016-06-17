@@ -9,7 +9,7 @@ test $# = 1 || { echo "Usage: ${0##*/} hostlist.txt"; exit 1; }
 List="$1"
 
  Now="$(date +%s)"
-Soon="$(date +%s -d 'next week')"
+Soon="$(date +%s -d 'next month')"
 
 while read line; do
 	line="${line%#*}" ; test -z "$line" && continue
